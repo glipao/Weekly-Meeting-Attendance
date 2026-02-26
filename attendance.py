@@ -107,7 +107,7 @@ if display_button:
             pivot_df = df.pivot(index="type", columns="week", values="attendance").reindex(["Midweek", "Weekend"])
             pivot_df = pivot_df.reindex(columns=[1, 2, 3, 4, 5])
             pivot_df.columns = [f"Week {c}" for c in pivot_df.columns]
-            calc_df = pivot_df.fillna(0)
+            calc_df = pivot_df.fillna(0).apply(pd.to_numeric, errors='coerce')
             pivot_df = pivot_df.fillna(0).astype(int)
             pivot_df["Total"] = calc_df.sum(axis=1).astype(int)
             pivot_df["Average"] = calc_df.replace(0, pd.NA).mean(axis=1).round().fillna(0).astype(int)
