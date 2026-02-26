@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from database import supabase
 from auth import login
+import numpy as np
 
 if not login():
     st.stop()
@@ -108,10 +109,9 @@ if display_button:
             pivot_df = pivot_df.reindex(columns=[1, 2, 3, 4, 5])
             pivot_df.columns = [f"Week {c}" for c in pivot_df.columns]
             calc_df = pivot_df.apply(pd.to_numeric, errors='coerce')
-            st.write(calc_df.dtypes)
             pivot_df = pivot_df.fillna(0).astype(int)
             pivot_df["Total"] = calc_df.sum(axis=1).astype(int)
-            pivot_df["Average"] = calc_df.replace(0, pd.NA).mean(axis=1).round().fillna(0).astype(int)
+            pivot_df["Average"] = calc_df.replace(0, np.nan).mean(axis=1).round().fillna(0).astype(int)
             st.subheader(f"Attendance for {display_month} {display_year}")
             st.dataframe(pivot_df.fillna("-"))
         else:
